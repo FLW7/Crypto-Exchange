@@ -41,9 +41,14 @@
               />
               <img src="./assets/close.svg" class="cursor-pointer mr-4" />
             </div>
-            <div class="dropdown__list px-4 py-3.5 border-t border-stroke-grey">
+            <div class="dropdown__list border-t border-stroke-grey">
               <ul>
-                <li class="flex items-center gap-x-4">
+                <li>
+                  <img src="./assets/eth.svg" />
+                  <p>ETH</p>
+                  <span>Ethereum</span>
+                </li>
+                <li>
                   <img src="./assets/eth.svg" />
                   <p>ETH</p>
                   <span>Ethereum</span>
@@ -79,8 +84,16 @@ input {
   }
 }
 
-.container {
-  width: 100%;
-  height: 500px;
+.dropdown__list {
+  li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 48px;
+    padding: 0 1rem;
+    &:hover {
+      background-color: #eaf1f7;
+    }
+  }
 }
 </style>
