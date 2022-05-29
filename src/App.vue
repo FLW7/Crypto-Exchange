@@ -2,7 +2,6 @@
 
 <template>
   <main class="flex flex-col justify-center h-full">
-    <!-- <button @click="fetchCurrencies">получить</button> -->
     <div
       class="
         container
@@ -47,7 +46,11 @@
               <drop-btn @click="dropdownToggle" />
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown v-if="dropOpen1" :dropOpen1="dropOpen1" />
+            <dropdown
+              v-if="dropOpen1"
+              :dropOpen1="dropOpen1"
+              :currencies="currencies"
+            />
           </div>
           <img
             class="flex self-start mt-3 mx-7 cursor-pointer"
@@ -77,7 +80,11 @@
               <drop-btn @click="dropdownToggle" />
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown v-if="dropOpen2" v-bind:dropOpen2="dropOpen2" />
+            <dropdown
+              v-if="dropOpen2"
+              :dropOpen2="dropOpen2"
+              :currencies="currencies"
+            />
           </div>
         </div>
         <div class="third-input flex flex-col">
@@ -114,12 +121,13 @@
 <script>
 import dropdown from "./components/dropdown.vue";
 import dropBtn from "./components/drop-btn.vue";
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "app",
   data() {
     return {
+      currencies: [],
       dropOpen1: false,
       dropOpen2: false,
     };
@@ -140,16 +148,19 @@ export default {
     wrapperToggle() {
       (this.dropOpen1 = false), (this.dropOpen2 = false);
     },
-    // async fetchCurrencies() {
-    //   try {
-    //     const response = await axios.get(
-    //       "https://api.changenow.io/v1/currencies?active=true"
-    //     );
-    //     console.log(response);
-    //   } catch (e) {
-    //     alert("ошибка");
-    //   }
-    // },
+    async fetchCurrencies() {
+      try {
+        const response = await axios.get(
+          "https://api.changenow.io/v1/currencies?active=true"
+        );
+        this.currencies = response.data;
+      } catch (e) {
+        alert("ошибка");
+      }
+    },
+  },
+  mounted() {
+    this.fetchCurrencies();
   },
 };
 </script>

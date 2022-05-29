@@ -26,19 +26,36 @@
         max-h-44
       "
     >
-      <ul>
-        <li @click="dropClose">
-          <img src="../assets/eth.svg" />
-          <p>ETH</p>
-          <span>Ethereum</span>
-        </li>
-      </ul>
+      <li
+        @click="dropClose"
+        v-for="(current, index) in currencies"
+        :key="index"
+        class="
+          overflow-hidden
+          flex
+          items-center
+          gap-x-4
+          h-12
+          pl-4
+          cursor-pointer
+        "
+      >
+        <img :src="current.image" />
+        <p class="uppercase">{{ current.ticker }}</p>
+        <span class="whitespace-nowrap">{{ current.name }}</span>
+      </li>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    currencies: {
+      type: Array,
+      required: true,
+    },
+  },
   methods: {
     dropClose(e) {
       if (e.target.closest(".first-inp")) {
@@ -54,17 +71,17 @@ export default {
 
 <style lang="scss" scoped>
 .dropdown__list {
-  li {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    height: 48px;
-    padding: 0 1rem;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
 
+  /* ползунок скроллбара */
+  &::-webkit-scrollbar-thumb {
+    background-color: #11b3fe;
+    border-radius: 8px;
+  }
+  li {
     p {
       cursor: pointer;
     }

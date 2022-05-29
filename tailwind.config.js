@@ -1,7 +1,9 @@
 module.exports = {
   content: [
     "./index.html",
-    "./src/App.vue"
+    "./src/App.vue",
+    "./src/components/drop-btn.vue",
+    "./src/components/dropdown.vue"
   ],
   theme: {
     extend: {},
