@@ -4,10 +4,12 @@
       dropdown
       w-full
       absolute
+      top-0
       bg-grey
       rounded
       border border-stroke-grey
       z-20
+      hidden
     "
   >
     <div class="dropdown__input flex items-center pl-4">
@@ -15,6 +17,7 @@
         class="search bg-grey h-12 w-full"
         type="text"
         placeholder="Search"
+        v-model.trim="search"
       />
       <img src="../assets/close.svg" class="cursor-pointer mr-4" />
     </div>
@@ -27,8 +30,8 @@
       "
     >
       <li
-        @click="dropClose"
-        v-for="(current, index) in currencies"
+        @click="liClick"
+        v-for="(current, index) in filteredCurrencies"
         :key="index"
         class="
           overflow-hidden
@@ -50,6 +53,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      search: "",
+    };
+  },
   props: {
     currencies: {
       type: Array,
@@ -57,13 +65,38 @@ export default {
     },
   },
   methods: {
-    dropClose(e) {
+    liClick(e) {
       if (e.target.closest(".first-inp")) {
-        this.$root.$data.dropOpen1 = false;
+        let btn = document.querySelector(".first-inp .drop-btn__content");
+        let p = btn.querySelector("p");
+        p.textContent = e.target.querySelector("p").textContent.toUpperCase();
+        let img = btn.querySelector("img");
+        img.setAttribute(
+          "src",
+          e.target.querySelector("img").getAttribute("src")
+        );
+        document.querySelector(".first-inp .dropdown").classList.add("hidden");
       }
       if (e.target.closest(".second-inp")) {
-        this.$root.$data.dropOpen2 = false;
+        let btn = document.querySelector(".second-inp .drop-btn__content");
+        let p = btn.querySelector("p");
+        p.textContent = e.target.querySelector("p").textContent.toUpperCase();
+        let img = btn.querySelector("img");
+        img.setAttribute(
+          "src",
+          e.target.querySelector("img").getAttribute("src")
+        );
+        document.querySelector(".second-inp .dropdown").classList.add("hidden");
       }
+    },
+  },
+  computed: {
+    filteredCurrencies() {
+      return this.currencies.filter(
+        (cur) =>
+          cur.ticker.toLowerCase().includes(this.search.toLowerCase()) ||
+          cur.name.toLowerCase().includes(this.search.toLowerCase())
+      );
     },
   },
 };

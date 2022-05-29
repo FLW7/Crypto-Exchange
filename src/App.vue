@@ -19,15 +19,13 @@
       <div class="inputs">
         <div class="exchangeInputs flex items-start mb-8">
           <div
-            v-if="dropOpen1 || dropOpen2"
             @click="wrapperToggle"
-            class="fixed insert-0 w-full h-full top-0 left-0 z-10"
+            class="fixed insert-0 w-full h-full top-0 left-0"
           ></div>
           <!-- ЛЕВЫЙ ИНПУТ -->
           <div class="first-inp relative w-full">
             <!-- ИНПУТ ОБМЕНА -->
             <div
-              v-if="!dropOpen1"
               class="
                 inp-btn
                 flex
@@ -43,25 +41,23 @@
                 placeholder="0"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle" />
+              <drop-btn @click="dropdownToggle">
+                <img />
+                <p></p>
+              </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown
-              v-if="dropOpen1"
-              :dropOpen1="dropOpen1"
-              :currencies="currencies"
-            />
+            <dropdown :currencies="currencies" />
           </div>
           <img
-            class="flex self-start mt-3 mx-7 cursor-pointer"
+            @click="wrapperToggle"
+            class="flex self-start mt-3 mx-7 z-10 cursor-pointer"
             src="./assets/swap.svg"
-            alt=""
           />
           <!-- ПРАВЫЙ ИНПУТ -->
           <div class="second-inp relative w-full">
             <!-- ИНПУТ ОБМЕНА -->
             <div
-              v-if="!dropOpen2"
               class="
                 inp-btn
                 flex
@@ -77,14 +73,13 @@
                 placeholder="0"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle" />
+              <drop-btn @click="dropdownToggle">
+                <img />
+                <p></p>
+              </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown
-              v-if="dropOpen2"
-              :dropOpen2="dropOpen2"
-              :currencies="currencies"
-            />
+            <dropdown :currencies="currencies" />
           </div>
         </div>
         <div class="third-input flex flex-col">
@@ -128,8 +123,6 @@ export default {
   data() {
     return {
       currencies: [],
-      dropOpen1: false,
-      dropOpen2: false,
     };
   },
   components: {
@@ -139,14 +132,20 @@ export default {
   methods: {
     dropdownToggle(e) {
       if (e.target.closest(".first-inp")) {
-        this.dropOpen1 = !this.dropOpen1;
+        document
+          .querySelector(".first-inp .dropdown")
+          .classList.remove("hidden");
       }
       if (e.target.closest(".second-inp")) {
-        this.dropOpen2 = !this.dropOpen2;
+        document
+          .querySelector(".second-inp .dropdown")
+          .classList.remove("hidden");
       }
     },
     wrapperToggle() {
-      (this.dropOpen1 = false), (this.dropOpen2 = false);
+      document.querySelectorAll(".dropdown").forEach((item) => {
+        item.classList.add("hidden");
+      });
     },
     async fetchCurrencies() {
       try {
@@ -154,8 +153,19 @@ export default {
           "https://api.changenow.io/v1/currencies?active=true"
         );
         this.currencies = response.data;
+
+        document
+          .querySelector(".first-inp .drop-btn__content img")
+          .setAttribute("src", this.currencies[0].image);
+        document.querySelector(".first-inp .drop-btn__content p").textContent =
+          this.currencies[0].ticker;
+        document
+          .querySelector(".second-inp .drop-btn__content img")
+          .setAttribute("src", this.currencies[1].image);
+        document.querySelector(".second-inp .drop-btn__content p").textContent =
+          this.currencies[1].ticker;
       } catch (e) {
-        alert("ошибка");
+        console.log("error", e);
       }
     },
   },
@@ -189,6 +199,17 @@ input {
   }
   &::placeholder {
     color: #80a2b6 !important;
+  }
+}
+.drop-btn__content {
+  img {
+    margin-right: 14px;
+    cursor: pointer;
+  }
+  p {
+    margin-right: 28px;
+    cursor: pointer;
+    text-transform: uppercase;
   }
 }
 </style>
