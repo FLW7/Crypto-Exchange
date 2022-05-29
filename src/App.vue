@@ -2,6 +2,7 @@
 
 <template>
   <main class="flex flex-col justify-center h-full">
+    <!-- <button @click="fetchCurrencies">получить</button> -->
     <div
       class="
         container
@@ -17,14 +18,75 @@
         <p class="text-xl">Exchange fast and easy</p>
       </div>
       <div class="inputs">
-        <exchangeInputs />
+        <div class="exchangeInputs flex items-start mb-8">
+          <div
+            v-if="dropOpen1 || dropOpen2"
+            @click="wrapperToggle"
+            class="fixed insert-0 w-full h-full top-0 left-0 z-10"
+          ></div>
+          <!-- ЛЕВЫЙ ИНПУТ -->
+          <div class="first-inp relative w-full">
+            <!-- ИНПУТ ОБМЕНА -->
+            <div
+              v-if="!dropOpen1"
+              class="
+                inp-btn
+                flex
+                items-center
+                bg-grey
+                rounded
+                border border-stroke-grey
+              "
+            >
+              <input
+                class="bg-grey h-12 px-4 w-full"
+                type="number"
+                placeholder="0"
+              />
+              <!-- BTN -->
+              <drop-btn @click="dropdownToggle" />
+            </div>
+            <!-- ИНПУТ ПОИСКА -->
+            <dropdown v-if="dropOpen1" :dropOpen1="dropOpen1" />
+          </div>
+          <img
+            class="flex self-start mt-3 mx-7 cursor-pointer"
+            src="./assets/swap.svg"
+            alt=""
+          />
+          <!-- ПРАВЫЙ ИНПУТ -->
+          <div class="second-inp relative w-full">
+            <!-- ИНПУТ ОБМЕНА -->
+            <div
+              v-if="!dropOpen2"
+              class="
+                inp-btn
+                flex
+                items-center
+                bg-grey
+                rounded
+                border border-stroke-grey
+              "
+            >
+              <input
+                class="bg-grey h-12 px-4 w-full"
+                type="number"
+                placeholder="0"
+              />
+              <!-- BTN -->
+              <drop-btn @click="dropdownToggle" />
+            </div>
+            <!-- ИНПУТ ПОИСКА -->
+            <dropdown v-if="dropOpen2" v-bind:dropOpen2="dropOpen2" />
+          </div>
+        </div>
         <div class="third-input flex flex-col">
           <label for="adress-input" class="mb-2">Your Ethereum address</label>
-          <div class="addres flex">
+          <div class="addres flex h-12">
             <input
               type="text"
               id="adress-input"
-              class="bg-grey rounded border border-stroke-grey h-12 px-4 w-full"
+              class="bg-grey rounded border border-stroke-grey px-4 w-full"
             />
             <div class="exchange-btn ml-8 flex flex-col items-center">
               <button
@@ -50,12 +112,44 @@
 </template>
 
 <script>
-import exchangeInputs from "./components/exchange-inputs.vue";
+import dropdown from "./components/dropdown.vue";
+import dropBtn from "./components/drop-btn.vue";
+// import axios from "axios";
 
 export default {
   name: "app",
+  data() {
+    return {
+      dropOpen1: false,
+      dropOpen2: false,
+    };
+  },
   components: {
-    exchangeInputs,
+    dropdown,
+    dropBtn,
+  },
+  methods: {
+    dropdownToggle(e) {
+      if (e.target.closest(".first-inp")) {
+        this.dropOpen1 = !this.dropOpen1;
+      }
+      if (e.target.closest(".second-inp")) {
+        this.dropOpen2 = !this.dropOpen2;
+      }
+    },
+    wrapperToggle() {
+      (this.dropOpen1 = false), (this.dropOpen2 = false);
+    },
+    // async fetchCurrencies() {
+    //   try {
+    //     const response = await axios.get(
+    //       "https://api.changenow.io/v1/currencies?active=true"
+    //     );
+    //     console.log(response);
+    //   } catch (e) {
+    //     alert("ошибка");
+    //   }
+    // },
   },
 };
 </script>
@@ -84,35 +178,6 @@ input {
   }
   &::placeholder {
     color: #80a2b6 !important;
-  }
-}
-
-.dropdown__list {
-  li {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    height: 48px;
-    padding: 0 1rem;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 23px;
-    font-weight: 400;
-
-    p {
-      cursor: pointer;
-    }
-    img {
-      cursor: pointer;
-    }
-    span {
-      display: block;
-      cursor: pointer;
-      color: #80a2b6;
-    }
-    &:hover {
-      background-color: #eaf1f7;
-    }
   }
 }
 </style>
