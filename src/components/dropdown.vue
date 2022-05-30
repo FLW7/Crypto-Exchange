@@ -73,12 +73,14 @@ export default {
       if (e.target.closest(".first-inp")) {
         let btn = document.querySelector(".first-inp .drop-btn__content");
         let p = btn.querySelector("p");
-        console.log(e.target.querySelector("p"));
-        p.textContent = e.target.querySelector("p").textContent.toUpperCase();
+        p.textContent = e.target
+          .closest("li")
+          .querySelector("p")
+          .textContent.toUpperCase();
         let img = btn.querySelector("img");
         img.setAttribute(
           "src",
-          e.target.querySelector("img").getAttribute("src")
+          e.target.closest("li").querySelector("img").getAttribute("src")
         );
         document.querySelector(".first-inp .dropdown").classList.add("hidden");
       }

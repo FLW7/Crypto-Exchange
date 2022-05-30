@@ -13,7 +13,7 @@
       "
     >
       <div class="title mb-14">
-        <h1 class="text-5xl mb-4" @click="estimatedAmount">Crypto Exchange</h1>
+        <h1 class="text-5xl mb-4">Crypto Exchange</h1>
         <p class="text-xl">Exchange fast and easy</p>
       </div>
       <div class="inputs">
@@ -36,6 +36,7 @@
                 type="number"
                 placeholder="-"
                 v-model="amount"
+                @input="estimatedAmount"
               />
               <!-- BTN -->
               <drop-btn @click="dropdownToggle" :estimated="estimated">
@@ -203,7 +204,7 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     this.fetchCurrencies();
     // this.estimatedAmount();
   },
