@@ -1,7 +1,7 @@
 
 
 <template>
-  <main class="flex flex-col justify-center h-full">
+  <main @click="wrapperToggle" class="flex flex-col justify-center h-full">
     <div
       class="
         container
@@ -13,15 +13,11 @@
       "
     >
       <div class="title mb-14">
-        <h1 class="text-5xl mb-4">Crypto Exchange</h1>
+        <h1 class="text-5xl mb-4" @click="estimatedAmount">Crypto Exchange</h1>
         <p class="text-xl">Exchange fast and easy</p>
       </div>
       <div class="inputs">
         <div class="exchangeInputs flex items-start mb-8">
-          <div
-            @click="wrapperToggle"
-            class="fixed insert-0 w-full h-full top-0 left-0"
-          ></div>
           <!-- ЛЕВЫЙ ИНПУТ -->
           <div class="first-inp relative w-full">
             <!-- ИНПУТ ОБМЕНА -->
@@ -38,19 +34,19 @@
               <input
                 class="bg-grey h-12 px-4 w-full"
                 type="number"
-                placeholder="0"
+                placeholder="-"
+                v-model="amount"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle">
+              <drop-btn @click="dropdownToggle" :estimated="estimated">
                 <img />
                 <p></p>
               </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown :currencies="currencies" />
+            <dropdown :currencies="currencies" :estimated="estimated" />
           </div>
           <img
-            @click="wrapperToggle"
             class="flex self-start mt-3 mx-7 z-10 cursor-pointer"
             src="./assets/swap.svg"
           />
@@ -71,15 +67,16 @@
                 class="bg-grey h-12 px-4 w-full"
                 type="number"
                 placeholder="0"
+                v-model="estimated"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle">
+              <drop-btn @click="dropdownToggle" :estimated="estimated">
                 <img />
                 <p></p>
               </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown :currencies="currencies" />
+            <dropdown :currencies="currencies" :estimated="estimated" />
           </div>
         </div>
         <div class="third-input flex flex-col">
@@ -104,7 +101,9 @@
               >
                 EXCHANGE
               </button>
-              <p class="error-text text-red mt-2">This pair is disabled now</p>
+              <p v-if="noPair" class="error-text text-red mt-2">
+                This pair is disabled now
+              </p>
             </div>
           </div>
         </div>
@@ -123,6 +122,9 @@ export default {
   data() {
     return {
       currencies: [],
+      estimated: 0,
+      noPair: false,
+      amount: 1,
     };
   },
   components: {
@@ -135,17 +137,21 @@ export default {
         document
           .querySelector(".first-inp .dropdown")
           .classList.remove("hidden");
+        document.querySelector(".second-inp .dropdown").classList.add("hidden");
       }
       if (e.target.closest(".second-inp")) {
         document
           .querySelector(".second-inp .dropdown")
           .classList.remove("hidden");
+        document.querySelector(".first-inp .dropdown").classList.add("hidden");
       }
     },
-    wrapperToggle() {
-      document.querySelectorAll(".dropdown").forEach((item) => {
-        item.classList.add("hidden");
-      });
+    wrapperToggle(e) {
+      if (!e.target.closest(".drop-btn") && !e.target.closest(".dropdown")) {
+        document.querySelectorAll(".dropdown").forEach((item) => {
+          item.classList.add("hidden");
+        });
+      }
     },
     async fetchCurrencies() {
       try {
@@ -168,9 +174,38 @@ export default {
         console.log("error", e);
       }
     },
+    async estimatedAmount() {
+      const API_KEY =
+        "c9155859d90d239f909d2906233816b26cd8cf5ede44702d422667672b58b0cd";
+      let from = document
+        .querySelector(".first-inp .drop-btn__content p")
+        .textContent.toLowerCase();
+      let to = document
+        .querySelector(".second-inp .drop-btn__content p")
+        .textContent.toLowerCase();
+      let amount = this.amount;
+      try {
+        const response = await axios.get(
+          "https://api.changenow.io/v1/exchange-amount/" +
+            `${amount}` +
+            "/" +
+            `${from}` +
+            "_" +
+            `${to}` +
+            "/?api_key=" +
+            `${API_KEY}`
+        );
+        this.estimated = response.data.estimatedAmount;
+        this.noPair = false;
+      } catch (e) {
+        console.log(e);
+        this.noPair = true;
+      }
+    },
   },
   mounted() {
     this.fetchCurrencies();
+    // this.estimatedAmount();
   },
 };
 </script>

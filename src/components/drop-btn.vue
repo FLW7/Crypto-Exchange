@@ -20,13 +20,12 @@ export default {
           type: Array,
           required: true,
         },
+        estimated: {
+          type: Number,
+          required: true,
+        },
       },
     };
-  },
-  methods: {
-    log() {
-      console.log(this.props.currencies[0]);
-    },
   },
 };
 </script>

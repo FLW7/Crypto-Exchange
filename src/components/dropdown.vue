@@ -63,12 +63,17 @@ export default {
       type: Array,
       required: true,
     },
+    estimated: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     liClick(e) {
       if (e.target.closest(".first-inp")) {
         let btn = document.querySelector(".first-inp .drop-btn__content");
         let p = btn.querySelector("p");
+        console.log(e.target.querySelector("p"));
         p.textContent = e.target.querySelector("p").textContent.toUpperCase();
         let img = btn.querySelector("img");
         img.setAttribute(
@@ -80,6 +85,7 @@ export default {
       if (e.target.closest(".second-inp")) {
         let btn = document.querySelector(".second-inp .drop-btn__content");
         let p = btn.querySelector("p");
+        console.log(e.target.querySelector("p"));
         p.textContent = e.target.querySelector("p").textContent.toUpperCase();
         let img = btn.querySelector("img");
         img.setAttribute(
