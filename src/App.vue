@@ -233,7 +233,6 @@ export default {
             `${API_KEY}`
         );
         this.amount = response.data.minAmount;
-        console.log("minAmount", response.data.minAmount);
         this.noPair = false;
         this.tooSmall = false;
       } catch (e) {
