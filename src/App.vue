@@ -9,7 +9,7 @@
         justify-self-center
         self-center
         max-w-960
-        px-2
+        px-4
       "
     >
       <div class="title mb-14">
@@ -17,7 +17,7 @@
         <p class="text-xl" @click="estimatedAmount">Exchange fast and easy</p>
       </div>
       <div class="inputs">
-        <div class="exchangeInputs flex items-start mb-8">
+        <div class="exchangeInputs flex items-start mb-8 mob:block">
           <!-- ЛЕВЫЙ ИНПУТ -->
           <div class="first-inp relative w-full">
             <!-- ИНПУТ ОБМЕНА -->
@@ -48,11 +48,29 @@
             <!-- ИНПУТ ПОИСКА -->
             <dropdown :currencies="currencies" @click="minAndEstimated" />
           </div>
-          <img
-            @click="swap"
-            class="flex self-start mt-3 mx-7 z-10 cursor-pointer"
-            src="./assets/swap.svg"
-          />
+          <div
+            class="
+              mx-7
+              flex
+              items-center
+              justify-center
+              h-12
+              mob:justify-end mob:mx-0
+            "
+          >
+            <img
+              @click="swap"
+              class="
+                flex
+                z-10
+                cursor-pointer
+                w-13
+                h-12
+                mob:w-6 mob:h-6 mob:rotate-90
+              "
+              src="./assets/swap.svg"
+            />
+          </div>
           <!-- ПРАВЫЙ ИНПУТ -->
           <div class="second-inp relative w-full">
             <!-- ИНПУТ ОБМЕНА -->
@@ -82,15 +100,30 @@
             <dropdown :currencies="currencies" @click="minAndEstimated" />
           </div>
         </div>
-        <div class="third-input flex flex-col">
+        <div class="third-input flex flex-col mob:mt-12">
           <label for="adress-input" class="mb-2">Your Ethereum address</label>
-          <div class="addres flex h-12">
+          <div class="addres flex h-12 mob:flex-col mob:h-auto">
             <input
               type="text"
               id="adress-input"
-              class="bg-grey rounded border border-stroke-grey px-4 w-full"
+              class="
+                bg-grey
+                rounded
+                border border-stroke-grey
+                px-4
+                w-full
+                mob:h-12
+              "
             />
-            <div class="exchange-btn ml-8 flex flex-col items-center">
+            <div
+              class="
+                exchange-btn
+                ml-8
+                flex flex-col
+                items-center
+                mob:ml-0 mob:mt-4
+              "
+            >
               <button
                 class="
                   w-52
@@ -100,6 +133,7 @@
                   text-white
                   font-bold
                   rounded
+                  mob:h-12 mob:w-full
                 "
               >
                 EXCHANGE

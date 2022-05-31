@@ -19,7 +19,10 @@ module.exports = {
       'font-black': '#282828',
       'font-grey': '#80A2B6',
       'white': '#FFF'
-    }
+    },
+    screens: {
+      'mob': { 'max': '800px' }
+    },
   },
   plugins: [],
 }
