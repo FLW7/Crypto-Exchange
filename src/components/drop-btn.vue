@@ -20,10 +20,6 @@ export default {
           type: Array,
           required: true,
         },
-        estimated: {
-          type: Number,
-          required: true,
-        },
       },
     };
   },

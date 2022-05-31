@@ -39,19 +39,17 @@
                 @input="estimatedAmount"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle" :estimated="estimated">
+              <drop-btn @click="dropdownToggle">
                 <img />
                 <p></p>
               </drop-btn>
             </div>
+            <p v-if="tooSmall" class="text-red absolute">deposit too small!</p>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown
-              :currencies="currencies"
-              :estimated="estimated"
-              @click="minAndEstimated"
-            />
+            <dropdown :currencies="currencies" @click="minAndEstimated" />
           </div>
           <img
+            @click="swap"
             class="flex self-start mt-3 mx-7 z-10 cursor-pointer"
             src="./assets/swap.svg"
           />
@@ -75,17 +73,13 @@
                 v-model="estimated"
               />
               <!-- BTN -->
-              <drop-btn @click="dropdownToggle" :estimated="estimated">
+              <drop-btn @click="dropdownToggle">
                 <img />
                 <p></p>
               </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown
-              :currencies="currencies"
-              :estimated="estimated"
-              @click="minAndEstimated"
-            />
+            <dropdown :currencies="currencies" @click="minAndEstimated" />
           </div>
         </div>
         <div class="third-input flex flex-col">
@@ -133,6 +127,7 @@ export default {
       currencies: [],
       estimated: 0,
       noPair: false,
+      tooSmall: false,
       amount: "",
     };
   },
@@ -205,13 +200,18 @@ export default {
         );
 
         this.estimated = response.data.estimatedAmount;
-        console.log(from);
-        console.log(to);
-        console.log("estimatedAmount", response.data.estimatedAmount);
         this.noPair = false;
+        this.tooSmall = false;
       } catch (e) {
-        console.log(e);
-        this.noPair = true;
+        if (e.response.status == 404) {
+          this.noPair = true;
+          this.estimated = "";
+          console.log(e);
+        }
+        if (e.response.status == 400) {
+          this.tooSmall = true;
+          this.estimated = "";
+        }
       }
     },
     async minAmount() {
@@ -235,20 +235,54 @@ export default {
         this.amount = response.data.minAmount;
         console.log("minAmount", response.data.minAmount);
         this.noPair = false;
+        this.tooSmall = false;
       } catch (e) {
-        this.noPair = true;
+        if (e.response.status == 404) {
+          this.noPair = true;
+          this.estimated = 0;
+        }
+        if (e.response.status == 400) {
+          this.tooSmall = true;
+          this.estimated = 0;
+        }
       }
     },
     minAndEstimated() {
       this.minAmount();
-      setTimeout(this.estimatedAmount, 1000);
+      setTimeout(this.estimatedAmount, 500);
+    },
+    swap() {
+      let imgSrc1 = document
+        .querySelector(".first-inp .drop-btn__content img")
+        .getAttribute("src");
+      let text1 = document.querySelector(
+        ".first-inp .drop-btn__content p"
+      ).textContent;
+      let imgSrc2 = document
+        .querySelector(".second-inp .drop-btn__content img")
+        .getAttribute("src");
+      let text2 = document.querySelector(
+        ".second-inp .drop-btn__content p"
+      ).textContent;
+      let buffImgSrc, buffp;
+      buffp = text2;
+      buffImgSrc = imgSrc2;
+      document
+        .querySelector(".second-inp .drop-btn__content img")
+        .setAttribute("src", imgSrc1);
+      document
+        .querySelector(".first-inp .drop-btn__content img")
+        .setAttribute("src", buffImgSrc);
+      document.querySelector(".second-inp .drop-btn__content p").textContent =
+        text1;
+      document.querySelector(".first-inp .drop-btn__content p").textContent =
+        buffp;
+
+      this.minAndEstimated();
     },
   },
   beforeMount() {
     this.fetchCurrencies();
-  },
-  mounted() {
-    this.estimatedAmount();
   },
 };
 </script>

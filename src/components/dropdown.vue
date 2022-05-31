@@ -19,7 +19,11 @@
         placeholder="Search"
         v-model.trim="search"
       />
-      <img src="../assets/close.svg" class="cursor-pointer mr-4" />
+      <img
+        @click="clearSearch"
+        src="../assets/close.svg"
+        class="cursor-pointer mr-4"
+      />
     </div>
     <div
       class="
@@ -63,10 +67,6 @@ export default {
       type: Array,
       required: true,
     },
-    estimated: {
-      type: Number,
-      required: true,
-    },
   },
   methods: {
     liClick(e) {
@@ -98,6 +98,9 @@ export default {
         );
         document.querySelector(".second-inp .dropdown").classList.add("hidden");
       }
+    },
+    clearSearch() {
+      this.search = "";
     },
   },
   computed: {
