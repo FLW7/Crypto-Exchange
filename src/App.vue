@@ -134,13 +134,26 @@
                   font-bold
                   rounded
                   mob:h-12 mob:w-full
+                  relative
                 "
               >
                 EXCHANGE
+                <p
+                  v-if="noPair"
+                  class="
+                    error-text
+                    text-red
+                    mt-2
+                    absolute
+                    bottom-[-30px]
+                    right-[50%]
+                    translate-x-2/4
+                    whitespace-nowrap
+                  "
+                >
+                  This pair is disabled now
+                </p>
               </button>
-              <p v-if="noPair" class="error-text text-red mt-2">
-                This pair is disabled now
-              </p>
             </div>
           </div>
         </div>
