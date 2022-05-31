@@ -13,8 +13,8 @@
       "
     >
       <div class="title mb-14">
-        <h1 class="text-5xl mb-4">Crypto Exchange</h1>
-        <p class="text-xl">Exchange fast and easy</p>
+        <h1 class="text-5xl mb-4" @click="minAmount">Crypto Exchange</h1>
+        <p class="text-xl" @click="estimatedAmount">Exchange fast and easy</p>
       </div>
       <div class="inputs">
         <div class="exchangeInputs flex items-start mb-8">
@@ -45,7 +45,11 @@
               </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown :currencies="currencies" :estimated="estimated" />
+            <dropdown
+              :currencies="currencies"
+              :estimated="estimated"
+              @click="minAndEstimated"
+            />
           </div>
           <img
             class="flex self-start mt-3 mx-7 z-10 cursor-pointer"
@@ -67,7 +71,7 @@
               <input
                 class="bg-grey h-12 px-4 w-full"
                 type="number"
-                placeholder="0"
+                placeholder="-"
                 v-model="estimated"
               />
               <!-- BTN -->
@@ -77,7 +81,11 @@
               </drop-btn>
             </div>
             <!-- ИНПУТ ПОИСКА -->
-            <dropdown :currencies="currencies" :estimated="estimated" />
+            <dropdown
+              :currencies="currencies"
+              :estimated="estimated"
+              @click="minAndEstimated"
+            />
           </div>
         </div>
         <div class="third-input flex flex-col">
@@ -125,7 +133,7 @@ export default {
       currencies: [],
       estimated: 0,
       noPair: false,
-      amount: 1,
+      amount: "",
     };
   },
   components: {
@@ -160,7 +168,6 @@ export default {
           "https://api.changenow.io/v1/currencies?active=true"
         );
         this.currencies = response.data;
-
         document
           .querySelector(".first-inp .drop-btn__content img")
           .setAttribute("src", this.currencies[0].image);
@@ -196,17 +203,52 @@ export default {
             "/?api_key=" +
             `${API_KEY}`
         );
+
         this.estimated = response.data.estimatedAmount;
+        console.log(from);
+        console.log(to);
+        console.log("estimatedAmount", response.data.estimatedAmount);
         this.noPair = false;
       } catch (e) {
         console.log(e);
         this.noPair = true;
       }
     },
+    async minAmount() {
+      const API_KEY =
+        "c9155859d90d239f909d2906233816b26cd8cf5ede44702d422667672b58b0cd";
+      let from = document
+        .querySelector(".first-inp .drop-btn__content p")
+        .textContent.toLowerCase();
+      let to = document
+        .querySelector(".second-inp .drop-btn__content p")
+        .textContent.toLowerCase();
+      try {
+        const response = await axios.get(
+          "https://api.changenow.io/v1/min-amount/" +
+            `${from}` +
+            "_" +
+            `${to}` +
+            "/?api_key=" +
+            `${API_KEY}`
+        );
+        this.amount = response.data.minAmount;
+        console.log("minAmount", response.data.minAmount);
+        this.noPair = false;
+      } catch (e) {
+        this.noPair = true;
+      }
+    },
+    minAndEstimated() {
+      this.minAmount();
+      setTimeout(this.estimatedAmount, 1000);
+    },
   },
-  created() {
+  beforeMount() {
     this.fetchCurrencies();
-    // this.estimatedAmount();
+  },
+  mounted() {
+    this.estimatedAmount();
   },
 };
 </script>
